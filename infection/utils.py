@@ -1,9 +1,10 @@
 # --------------------------------------------------
-# Useful utilities for randomly generating names
+# Useful utilities for the infection game
 # --------------------------------------------------
 
 import names
 
+# Useful for randomly generating names without getting repeats
 def random_names(n):
     """ Generate a random list of `n` names. """
     people = list()
