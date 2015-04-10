@@ -79,7 +79,7 @@ class InfectionGame(People):
             
             # Set people properties to infected
             for i in self.infections:
-                self.people[peeps.index(i)].infected = True
+                self.people[paired_list.index(i)].infected = True
 
 
     def _check_history(self, shuffled):

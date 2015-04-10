@@ -20,3 +20,7 @@ python setup.py develop
 
 1. Jupyter (IPython) notebooks are used for the examples.
 2. The python module `names` must be installed for generating random names. (see [this](https://github.com/treyhunner/names) for more detail and installation.)
+
+## Tutorials
+
+Click [here](http://nbviewer.ipython.org/github/Zsailer/infection/blob/master/examples/Basic%20infection%20game%20tutorial.ipynb) to see a static tutorial notebook. 
