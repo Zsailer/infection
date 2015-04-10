@@ -1,6 +1,6 @@
 # A simple simulation of Andrea Loes' infection game
-import random as r
-import numpy as np
+import random
+import string
 
 def in_history(new_name, old_names):
     """ Return True if new_name is in old_names. """
@@ -8,7 +8,12 @@ def in_history(new_name, old_names):
         if new_name == name:
             return True
     return False
-    
+
+def random_names(n):
+    """ Generate random list of names. """
+    def name():
+        return ''.join(random.choice(string.ascii_uppercase) for i in range(6))
+    return [name() for i in range(n)]
 
 class Person(object):
     
@@ -16,6 +21,7 @@ class Person(object):
         """ Create a person for the simulation and name them. """
         self._name = name
         self._infected = False
+        self._contacts = [name]
         
     @property
     def name(self):
@@ -52,9 +58,9 @@ class Universe(object):
     def __init__(self, names):
         """ Run infection simulation on this universe of people. """
         self._names = names
-        self._people = dict()
+        self._people = list()
         for n in names:
-            self._people[n] = Person(n)
+            self._people.append(Person(n))
          
     @property
     def names(self):
@@ -75,9 +81,9 @@ class Universe(object):
     def infections(self):
         """ Get all people infected in the universe. """
         infections = list()
-        for key,val in self._persons.items():
-            if val.infected is True:
-                infections.append(key)
+        for p in self.people:
+            if p.infected is True:
+                infections.append(p.name)
         return infections
 
         
@@ -89,7 +95,8 @@ class InfectionGame(Universe):
         self._rounds = rounds
         # Randomly select patient 0, the start of the infection
         if patient0 is None:
-            self._patient0 = r.choice(self.people)
+            self._patient0 = random.choice(self.people)
+            self._people[self.names.index(self._patient0.name)].infected = True
         else:
             self._patient0 = patient0
         
@@ -109,22 +116,29 @@ class InfectionGame(Universe):
             history = True
             counter = 0
             # A new round with no old contacts
-            while history is True or counter < 100:
+            while history is True and counter < 100:
                 peeps = self.names
-                r.shuffle(peeps)
-                self._check_history(peeps)
+                random.shuffle(peeps)
+                history = self._check_history(peeps)
                 counter += 1
-            if counter == 100:
+            
+            # Raise error if while loop hit limit.
+            if counter >= 100:
                 raise Exception("Reached maximum iterations.")
-            for i in range(len(self.people)):
-                self.people[peeps[i]].
-                p._contact = peeps[i]
-        
+                
+            # Add next round of contacts to all people.                
+            for p in range(len(self.people)):
+                self.people[p]._contact(peeps[p])
+                
+            for i in self.infections:
+                self.people[peeps.index(i)].infected = True
+
+
     def _check_history(self, shuffled):
         """ Check history each person to make sure they don't contact the same person twice. """
         contacts = self.contacts
         for i in range(len(shuffled)):
             for j in range(len(self.contacts[i])):
-                if shuffled[i] = self.contacts[i,j]:
+                if shuffled[i] == self.contacts[i][j]:
                     return True
         return False
