@@ -2,23 +2,10 @@
 import random
 import string
 
-def in_history(new_name, old_names):
-    """ Return True if new_name is in old_names. """
-    for name in old_names:
-        if new_name == name:
-            return True
-    return False
-
-def random_names(n):
-    """ Generate random list of names. """
-    def name():
-        return ''.join(random.choice(string.ascii_uppercase) for i in range(6))
-    return [name() for i in range(n)]
-
 class Person(object):
     
     def __init__(self, name):
-        """ Create a person for the simulation and name them. """
+        """ Cree a person for the simulation and name them. """
         self._name = name
         self._infected = False
         self._contacts = [name]
@@ -31,7 +18,7 @@ class Person(object):
     @property
     def contacts(self):
         """ Return list of people this person contacted over the course of the simulation. """
-        return self._contacts
+        return self._contacts[1:]
             
     @property
     def infected(self):
@@ -60,7 +47,9 @@ class Universe(object):
         self._names = names
         self._people = list()
         for n in names:
-            self._people.append(Person(n))
+            p = Person(n)
+            self._people.append(p)
+            setattr(self, n, p)
          
     @property
     def names(self):
@@ -85,6 +74,15 @@ class Universe(object):
             if p.infected is True:
                 infections.append(p.name)
         return infections
+        
+    @property
+    def healthy(self):
+        """ Get all healthy people in this universe. """
+        healthy = list()
+        for p in self.people:
+            if p.infected is False:
+                healthy.append(p.name)
+        return healthy
 
         
 class InfectionGame(Universe):
@@ -117,7 +115,7 @@ class InfectionGame(Universe):
             counter = 0
             # A new round with no old contacts
             while history is True and counter < 100:
-                peeps = self.names
+                peeps = list(self.names)
                 random.shuffle(peeps)
                 history = self._check_history(peeps)
                 counter += 1
@@ -139,6 +137,6 @@ class InfectionGame(Universe):
         contacts = self.contacts
         for i in range(len(shuffled)):
             for j in range(len(self.contacts[i])):
-                if shuffled[i] == self.contacts[i][j]:
+                if shuffled[i] == self.contacts[i][j] or shuffled[i] == self.names[i]:
                     return True
         return False

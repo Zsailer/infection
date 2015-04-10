@@ -7,6 +7,6 @@ setup(name='infection',
       author='Zach Sailer',
       author_email='zachsailer@gmail.com',
       url='',
-      packages=['infection']
+      packages=['infection'],
       install_requires=['names'],
 )
